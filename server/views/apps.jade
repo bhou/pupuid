@@ -1,0 +1,14 @@
+//
+   Created by BHOU on 6/25/14.
+
+table(style="width: 100%;")
+  each app in apps
+    tr
+      td(style="width: 30%;")
+        =app.id
+      td(style="width: 30%;")
+        =app.samlId
+      td(style="width: 30%;")
+        =app.postUrl
+      td(style="width: 30%;")
+        =app.token

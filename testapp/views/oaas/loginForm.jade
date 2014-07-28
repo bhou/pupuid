@@ -1,0 +1,12 @@
+//
+   Created by BHOU on 7/22/2014.
+form(method='post', name='hiddenform', action='#{callback}')
+  input(type='hidden', name='email', value='#{email}')
+  input(type='hidden', name='password', value='#{password}')
+  input(type='hidden', name='RelayState', value='#{RelayState}')
+  noscript
+    | <p>
+    | Script is disabled. Click Submit to continue.
+    | </p><input type="submit" value="Submit">
+script(language='javascript', type='text/javascript').
+  window.setTimeout('document.forms[0].submit()', 0);

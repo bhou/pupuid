@@ -1,0 +1,21 @@
+//
+   Created by BHOU on 6/20/14.
+
+form#commentfrom(class="group", method="post", action="/doRegister", enctype="application/x-www-form-urlencoded", style="margin-bottom:0px;")
+  fieldset.group
+    p
+      | email
+      if email != null
+        input(type="text", name="email", title="email", value=email)
+      else
+        input(type="text", name="email", title="email")
+    p
+      | name
+      if name != null
+        input(type="text", name="name", title="username", value=name)
+      else
+        input(type="text", name="name", title="username")
+    p
+      | password
+      input(type="password", name="password", title="password")
+  input(type="submit", name="register", value="register", style="font-size: 14px; float: right;")

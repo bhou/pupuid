@@ -1,0 +1,122 @@
+//
+   Created by bhou on 7/21/2014.
+
+doctype html
+//if lt IE 7
+  html.no-js.ie6.lt8(lang="en")
+//if IE 7
+  html.no-js.ie7.lt8(lang="en")
+//if IE 8
+  html.no-js.ie8.lt8(lang="en")
+//if IE 9
+  html.no-js.ie9(lang="en")
+// [if (gt IE 9)|!(IE)] <!
+html.no-js(lang="en")
+  // <![endif]
+  head
+    meta(charset="UTF-8")
+    // <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    title Desision Optimization Cloud
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(name="description", content="Login and Registration Form with HTML5 and CSS3")
+    meta(name="keywords", content="html5, css3, form, switch, animation, :target, pseudo-class")
+    meta(name="author", content="Codrops")
+    link(rel="shortcut icon", href="../favicon.ico")
+    link(rel="stylesheet", type="text/css", href="/oaas/css/demo.css")
+    link(rel="stylesheet", type="text/css", href="/oaas/css/style.css")
+    link(rel="stylesheet", type="text/css", href="/oaas/css/animate-custom.css")
+  body
+    .container
+      // Codrops top bar
+      .codrops-top
+        a(href="#")
+          strong &#171; Home:
+          | OpenU
+        span.right
+          a(href="#")
+            strong Back to OaaS
+        .clr
+      // / Codrops top bar
+      header
+        h1
+          | Desision Optimization Cloud
+          span &nbsp;Begin your free trial
+        nav.codrops-demos
+          span
+            a(href="#tologin")
+              strong "Sign in"
+            | &nbsp; means to login to IBM id and DOcloud if you have aready subscribed
+        nav.codrops-demos
+          span
+            a(href="#tosubscription")
+              strong "Subscribe"
+            | &nbsp; means you have already an IBM id and you want to subscribe DOcloud
+        nav.codrops-demos
+          span
+            a(href="#toregister")
+              strong "Register"
+            | &nbsp; means you create an IBM id and subscribe a free trial on DOcloud
+      section
+        #container_demo
+          // hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4
+          a#toregister.hiddenanchor
+          a#tologin.hiddenanchor
+          a#tosubscription.hiddenanchor
+          #wrapper
+            #login.animate.form
+              form(action="/doLogin", autocomplete="on", method="post")
+                h1 Sign in
+                p
+                  label.uname(for="username", data-icon="u")  Your email
+                  input#username(type="text", name="email", required="required", placeholder="mymail@mail.com")
+                p
+                  label.youpasswd(for="password", data-icon="p")  Your password
+                  input#password(type="password", name="password", required="required", placeholder="eg. X8df!90EO")
+                p.keeplogin
+                  input#loginkeeping(type="checkbox", name="loginkeeping", value="loginkeeping")
+                  label(for="loginkeeping") Keep me logged in
+                p.login.button
+                  input(type="submit", value="Submit")
+                if RelayState
+                  p.login.button
+                    input(type="hidden" name="RelayState" value="#{RelayState}")
+                p.change_link
+                  | Not a member yet ?
+                  a.to_register(href="#toregister") Join us
+            #register.animate.form
+              form(action="/doRegister", autocomplete="on", method="post")
+                h1  Begin your free trial
+                p
+                  label.uname(for="usernamesignup", data-icon="u") Your username
+                  input#usernamesignup(type="text", name="name", required="required", placeholder="mysuperusername690")
+                p
+                  label.youmail(for="emailsignup", data-icon="e")  Your email
+                  input#emailsignup(type="email", name="email", required="required", placeholder="mysupermail@mail.com")
+                p
+                  label.youpasswd(for="passwordsignup", data-icon="p") Your password
+                  input#passwordsignup(type="password", name="password", required="required", placeholder="eg. X8df!90EO")
+                p
+                  label.youpasswd(for="passwordsignup_confirm", data-icon="p") Please confirm your password
+                  input#passwordsignup_confirm(type="password", name="rpassword", required="required", placeholder="eg. X8df!90EO")
+                p.signin.button
+                  input(type="submit", value="Sign up")
+                if RelayState
+                  p.login.button
+                    input(type="hidden" name="RelayState" value="#{RelayState}")
+                p.change_link
+                  | Already a member ?
+                  a.to_register(href="#tologin")  Go and log in
+            #subscription.animate.form
+              form(action="/doSubscribe", autocomplete="on", method="post")
+                h1 Subscribe
+                p
+                  label.uname(for="username", data-icon="u")  Your email
+                  input#username(type="text", name="email", required="required", placeholder="mymail@mail.com")
+                p.login.button
+                  input(type="submit", value="Subscribe")
+                if RelayState
+                  p.login.button
+                    input(type="hidden" name="RelayState" value="#{RelayState}")
+                p.change_link
+                  | Do not have an IBM ID yet ?
+                  a.to_register(href="#toregister") Join us

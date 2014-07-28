@@ -1,0 +1,43 @@
+//
+   Created by BHOU on 6/20/14.
+
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    title Login - CodePen
+    link(rel='stylesheet', href='stylesheets/style.css', media='screen', type='text/css')
+  body
+    html(lang='en-US')
+      head
+        meta(charset='utf-8')
+        title Login
+        link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans:400,700')
+        //if lt IE 9
+          script(src='http://html5shiv.googlecode.com/svn/trunk/html5.js')
+      body
+        #login
+          h1
+            span
+              | Open U
+          form(action='/doLogin', method='post', enctype='application/x-www-form-urlencoded', style='margin-bottom:0px;')
+            fieldset.clearfix
+              p
+                span.fontawesome-envelope
+                input(type='text', name='email', value='Email Address', onblur='if(this.value == \'\') this.value = \'Email Address\'', onfocus='if(this.value == \'Email Address\') this.value = \'\'', required='required')
+              //
+                 JS because of IE support; better: placeholder="Username"
+              p
+                span.fontawesome-lock
+                input(type='password', name="password", value='Password', onblur='if(this.value == \'\') this.value = \'Password\'', onfocus='if(this.value == \'Password\') this.value = \'\'', required='required')
+              //
+                 JS because of IE support; better: placeholder="Password"
+              p
+                input(type='submit', value='Sign In')
+          p
+            | Not a member?
+            a(href='/register') Sign up now
+            span.fontawesome-arrow-right
+        //
+           end login
+    script(src='http://codepen.io/assets/libs/fullpage/none.js')

@@ -1,0 +1,13 @@
+//
+   Created by BHOU on 6/20/14.
+
+form#commentfrom(class="group", method="post", action="/doLogin", enctype="application/x-www-form-urlencoded", style="margin-bottom:0px;")
+  fieldset.group
+    p
+      input(type="text", name="email", title="email")
+    p
+      input(type="password", name="password", title="password")
+
+  input(type="submit", name="login", value="login", style="font-size: 14px; float: right;")
+
+  a(href="/register") register

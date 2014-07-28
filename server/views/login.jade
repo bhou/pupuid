@@ -1,0 +1,188 @@
+//
+   Created by BHOU on 6/25/14.
+
+doctype html
+//if IE 8
+  html.ie8(lang="en")
+//if IE 9
+  html.ie9(lang="en")
+// [if !IE] <!
+html(lang="en")
+  // <![endif]
+  // BEGIN HEAD
+  head
+    meta(charset="utf-8")
+    title Login Form
+    meta(content="width=device-width, initial-scale=1.0", name="viewport")
+    meta(content="", name="description")
+    meta(content="", name="author")
+    // BEGIN GLOBAL MANDATORY STYLES
+    link(href="assets/plugins/bootstrap/css/bootstrap.min.css", rel="stylesheet", type="text/css")
+    link(href="assets/plugins/bootstrap/css/bootstrap-responsive.min.css", rel="stylesheet", type="text/css")
+    link(href="assets/plugins/font-awesome/css/font-awesome.min.css", rel="stylesheet", type="text/css")
+    link(href="assets/css/style-metro.css", rel="stylesheet", type="text/css")
+    link(href="assets/css/style.css", rel="stylesheet", type="text/css")
+    link(href="assets/css/style-responsive.css", rel="stylesheet", type="text/css")
+    link#style_color(href="assets/css/themes/default.css", rel="stylesheet", type="text/css")
+    link(href="assets/plugins/uniform/css/uniform.default.css", rel="stylesheet", type="text/css")
+    link(rel="stylesheet", type="text/css", href="assets/plugins/select2/select2_metro.css")
+    // END GLOBAL MANDATORY STYLES
+    // BEGIN PAGE LEVEL STYLES
+    link(href="assets/css/pages/login-soft.css", rel="stylesheet", type="text/css")
+    // END PAGE LEVEL STYLES
+    link(rel="shortcut icon", href="favicon.ico")
+  // END HEAD
+  // BEGIN BODY
+  body.login
+    // BEGIN LOGO
+    .logo
+      // PUT YOUR LOGO HERE
+    // END LOGO
+    // BEGIN LOGIN
+    .content
+      // BEGIN LOGIN FORM
+      form.form-vertical.login-form(action="/doLogin", method="post")
+        h3.form-title Login to your account
+        .alert.alert-error.hide
+          button.close(data-dismiss="alert")
+          span Enter any email and password.
+        .control-group
+          // ie8, ie9 does not support html5 placeholder, so we just show field title for that
+          label.control-label.visible-ie8.visible-ie9 Email
+          .controls
+            .input-icon.left
+              i.icon-envelope
+              input.m-wrap.placeholder-no-fix(type="text", autocomplete="off", placeholder="Email", name="email")
+        .control-group
+          label.control-label.visible-ie8.visible-ie9 Password
+          .controls
+            .input-icon.left
+              i.icon-lock
+              input.m-wrap.placeholder-no-fix(type="password", autocomplete="off", placeholder="Password", name="password")
+        .form-actions
+          label.checkbox
+            input(type="checkbox", name="remember", value="1")
+            | Remember me
+          button.btn.blue.pull-right(type="submit")
+            | Login
+            i.m-icon-swapright.m-icon-white
+        .forget-password
+          h4 Forgot your password ?
+          p
+            | no worries, click
+            a#forget-password(href="javascript:;") here
+            | to reset your password.
+        .create-account
+          p
+            | Don"t have an account yet ?
+            a#register-btn(href="javascript:;") Create an account
+      // END LOGIN FORM
+      // BEGIN FORGOT PASSWORD FORM
+      form.form-vertical.forget-form(action="index.html", method="post")
+        h3 Forget Password ?
+        p Enter your e-mail address below to reset your password.
+        .control-group
+          .controls
+            .input-icon.left
+              i.icon-envelope
+              input.m-wrap.placeholder-no-fix(type="text", placeholder="Email", autocomplete="off", name="email")
+        .form-actions
+          button#back-btn.btn(type="button")
+            i.m-icon-swapleft
+            | Back
+          button.btn.blue.pull-right(type="submit")
+            | Submit
+            i.m-icon-swapright.m-icon-white
+      // END FORGOT PASSWORD FORM
+      // BEGIN REGISTRATION FORM
+      form.form-vertical.register-form(action="/doRegister", method="post")
+        h3 Sign Up
+        p Enter your personal details below:
+        .control-group
+          label.control-label.visible-ie8.visible-ie9 Full Name
+          .controls
+            .input-icon.left
+              i.icon-font
+              input.m-wrap.placeholder-no-fix(type="text", placeholder="Full Name", name="fullname")
+        .control-group
+          label.control-label.visible-ie8.visible-ie9 Username
+          .controls
+            .input-icon.left
+              i.icon-user
+              input.m-wrap.placeholder-no-fix(type="text", autocomplete="off", placeholder="Username", name="name")
+        p Enter your account details below:
+        .control-group
+          // ie8, ie9 does not support html5 placeholder, so we just show field title for that
+          label.control-label.visible-ie8.visible-ie9 Email
+          .controls
+            .input-icon.left
+              i.icon-envelope
+              input.m-wrap.placeholder-no-fix(type="text", placeholder="Email", name="email")
+        .control-group
+          label.control-label.visible-ie8.visible-ie9 Password
+          .controls
+            .input-icon.left
+              i.icon-lock
+              input#register_password.m-wrap.placeholder-no-fix(type="password", autocomplete="off", placeholder="Password", name="password")
+        .control-group
+          label.control-label.visible-ie8.visible-ie9 Re-type Your Password
+          .controls
+            .input-icon.left
+              i.icon-ok
+              input.m-wrap.placeholder-no-fix(type="password", autocomplete="off", placeholder="Re-type Your Password", name="rpassword")
+        .control-group
+          .controls
+            label.checkbox
+              input(type="checkbox", name="tnc")
+              | I agree to the
+              a(href="#") Terms of Service
+              | and
+              a(href="#") Privacy Policy
+            #register_tnc_error
+        .form-actions
+          button#register-back-btn.btn(type="button")
+            i.m-icon-swapleft
+            | Back
+          button#register-submit-btn.btn.green.pull-right(type="submit")
+            | Sign Up
+            i.m-icon-swapright.m-icon-white
+      // END REGISTRATION FORM
+    // END LOGIN
+    // BEGIN COPYRIGHT
+    .copyright
+      | 2013 &#169;
+      a(href="http://www.justukfreebies.co.uk/") Just UK Freebies
+      | Login Form
+    // END COPYRIGHT
+    // BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time)
+    // BEGIN CORE PLUGINS
+    script(src="assets/plugins/jquery-1.10.1.min.js", type="text/javascript")
+    script(src="assets/plugins/jquery-migrate-1.2.1.min.js", type="text/javascript")
+    // IMPORTANT! Load jquery-ui-1.10.1.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip
+    script(src="assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js", type="text/javascript")
+    script(src="assets/plugins/bootstrap/js/bootstrap.min.js", type="text/javascript")
+    script(src="assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js", type="text/javascript")
+    //if lt IE 9
+      script(src="assets/plugins/excanvas.min.js")
+      script(src="assets/plugins/respond.min.js")
+    script(src="assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js", type="text/javascript")
+    script(src="assets/plugins/jquery.blockui.min.js", type="text/javascript")
+    script(src="assets/plugins/jquery.cookie.min.js", type="text/javascript")
+    script(src="assets/plugins/uniform/jquery.uniform.min.js", type="text/javascript")
+    // END CORE PLUGINS
+    // BEGIN PAGE LEVEL PLUGINS
+    script(src="assets/plugins/jquery-validation/dist/jquery.validate.min.js", type="text/javascript")
+    script(src="assets/plugins/backstretch/jquery.backstretch.min.js", type="text/javascript")
+    script(type="text/javascript", src="assets/plugins/select2/select2.min.js")
+    // END PAGE LEVEL PLUGINS
+    // BEGIN PAGE LEVEL SCRIPTS
+    script(src="assets/scripts/app.js", type="text/javascript")
+    script(src="assets/scripts/login-soft.js", type="text/javascript")
+    // END PAGE LEVEL SCRIPTS
+    script.
+      jQuery(document).ready(function() {
+      App.init();
+      Login.init();
+      });
+    // END JAVASCRIPTS
+  // END BODY
