@@ -1,5 +1,5 @@
 {
-  "name": "OpenU",
+  "name": "pupuid",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -20,6 +20,12 @@
     "xmldom": "~0.1.15",
     "xpath": "0.0.5",
     "xml-crypto": "0.0.13",
-    "jwt-simple": "*"
+    "xml-encryption": "*",
+    "jwt-simple": "*",
+    "winston": "*",
+    "mocha": "*",
+    "jsdoc": "*",
+    "supertest": "*",
+    "password-generator": "*"
   }
 }

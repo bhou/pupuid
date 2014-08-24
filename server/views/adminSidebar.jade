@@ -1,0 +1,153 @@
+// Left side column. contains the logo and sidebar
+aside.left-side.sidebar-offcanvas
+  // sidebar: style can be found in sidebar.less
+  section.sidebar
+    // Sidebar user panel
+    .user-panel
+      .pull-left.image
+        img.img-circle(src="../../img/avatar3.png", alt="User Image")
+      .pull-left.info
+        p Hello, Jane
+        a(href="#")
+          i.fa.fa-circle.text-success
+          | Online
+    // search form
+    form.sidebar-form(action="#", method="get")
+      .input-group
+        input.form-control(type="text", name="q", placeholder="Search...")
+        span.input-group-btn
+          button#search-btn.btn.btn-flat(type="submit", name="seach")
+            i.fa.fa-search
+    // /.search form
+    // sidebar menu: : style can be found in sidebar.less
+    ul.sidebar-menu
+      li
+        a(href="../../index.html")
+          i.fa.fa-dashboard
+          span Dashboard
+      li
+        a(href="../widgets.html")
+          i.fa.fa-th
+          span Widgets
+          small.badge.pull-right.bg-green new
+      li.treeview
+        a(href="#")
+          i.fa.fa-bar-chart-o
+          span Charts
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li
+            a(href="../charts/morris.html")
+              i.fa.fa-angle-double-right
+              | Morris
+          li
+            a(href="../charts/flot.html")
+              i.fa.fa-angle-double-right
+              | Flot
+          li
+            a(href="../charts/inline.html")
+              i.fa.fa-angle-double-right
+              | Inline charts
+      li.treeview
+        a(href="#")
+          i.fa.fa-laptop
+          span UI Elements
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li
+            a(href="../UI/general.html")
+              i.fa.fa-angle-double-right
+              | General
+          li
+            a(href="../UI/icons.html")
+              i.fa.fa-angle-double-right
+              | Icons
+          li
+            a(href="../UI/buttons.html")
+              i.fa.fa-angle-double-right
+              | Buttons
+          li
+            a(href="../UI/sliders.html")
+              i.fa.fa-angle-double-right
+              | Sliders
+          li
+            a(href="../UI/timeline.html")
+              i.fa.fa-angle-double-right
+              | Timeline
+      li.treeview
+        a(href="#")
+          i.fa.fa-edit
+          span Forms
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li
+            a(href="../forms/general.html")
+              i.fa.fa-angle-double-right
+              | General Elements
+          li
+            a(href="../forms/advanced.html")
+              i.fa.fa-angle-double-right
+              | Advanced Elements
+          li
+            a(href="../forms/editors.html")
+              i.fa.fa-angle-double-right
+              | Editors
+      li.treeview
+        a(href="#")
+          i.fa.fa-table
+          span Tables
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li
+            a(href="../tables/simple.html")
+              i.fa.fa-angle-double-right
+              | Simple tables
+          li
+            a(href="../tables/data.html")
+              i.fa.fa-angle-double-right
+              | Data tables
+      li
+        a(href="../calendar.html")
+          i.fa.fa-calendar
+          span Calendar
+          small.badge.pull-right.bg-red 3
+      li
+        a(href="../mailbox.html")
+          i.fa.fa-envelope
+          span Mailbox
+          small.badge.pull-right.bg-yellow 12
+      li.treeview.active
+        a(href="#")
+          i.fa.fa-folder
+          span Examples
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li
+            a(href="invoice.html")
+              i.fa.fa-angle-double-right
+              | Invoice
+          li
+            a(href="login.html")
+              i.fa.fa-angle-double-right
+              | Login
+          li
+            a(href="register.html")
+              i.fa.fa-angle-double-right
+              | Register
+          li
+            a(href="lockscreen.html")
+              i.fa.fa-angle-double-right
+              | Lockscreen
+          li
+            a(href="404.html")
+              i.fa.fa-angle-double-right
+              | 404 Error
+          li
+            a(href="500.html")
+              i.fa.fa-angle-double-right
+              | 500 Error
+          li.active
+            a(href="blank.html")
+              i.fa.fa-angle-double-right
+              | Blank Page
+  // /.sidebar

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: routes/api.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: routes/api.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Created by BHOU on 6/21/14.
+ * @module routes/api
+ */
+var mongoose = require('mongoose');
+var db = require('../lib/data/db');
+var models = require('../lib/data/models');
+var User = models.User;
+var Application = models.Application;
+var Attribute = models.Attribute;
+
+var INVALID_USER_ID = 499;
+var ERROR_WHEN_FIND = 498;
+var INVALID_ATTR_NAME = 497;
+var ERROR_WHEN_UPDATE = 496;
+var INVALID_EMAIL_FORMAT = 495;
+var EMAIL_EXISTED = 494;
+var CREATION_ERROR = 493;
+var UNAUTHORIZED_APP = 492;
+var FAILED_TO_CREATE_APP = 491;
+var UNAUTHORIZED_USER = 490;
+var USER_PASSWORD_INCORRECT = 489;
+
+
+function ensureAppAuthenticated(req, res, next) {
+  var app = req.header('app');
+  var token = req.header('token');
+
+  if (app == null || token == null) {
+    return res.end(JSON.stringify({
+      code: UNAUTHORIZED_APP,
+      message: 'unauthorized application'
+    }));
+  }
+
+  Application.findById(app, function (err, app) {
+    if (err || app == null || app.token == null || app.token != token) {
+      return res.end(JSON.stringify({
+        code: UNAUTHORIZED_APP,
+        message: 'unauthorized'
+      }));
+    }
+
+    if (app.token == token) {
+      return next();
+    }
+
+    res.end(JSON.stringify({
+      code: UNAUTHORIZED_APP,
+      message: 'unauthorized'
+    }));
+  });
+
+  //  db.getUserAttr(app, 'stoken', function(err, user, attr) {
+  //    if (err || user == null || attr == null || user.role != User.APP) {
+  //      return res.end(JSON.stringify({
+  //        code: UNAUTHORIZED_APP,
+  //        message: 'unauthorized'
+  //      }));
+  //    }
+  //
+  //    if (attr.value == token) {
+  //      return next();
+  //    }
+  //
+  //    res.end(JSON.stringify({
+  //      code: UNAUTHORIZED_APP,
+  //      message: 'unauthorized application'
+  //    }));
+  //  });
+}
+
+/**
+ @typedef UserInfo
+ @type {Object}
+ @property {string} id - user id
+ @property {string} email - user email
+ @property {string} name - user name
+ @property {Array} attributes - user attributes
+ */
+
+/**
+ * get user information
+ * @param req  {object} request object
+ * @param req.params.id {string} user id
+ * @param req.body.email {string} email address
+ * @param res {object} response object
+ * @return {UserInfo} user information
+ */
+function getUserInfo(req, res) {
+  var app = req.header('app');
+
+  var id = req.params.id;
+
+  if (id == null || "null" == id) {
+    var email = req.body.email;
+    if (email == null) {
+      return res.end(JSON.stringify({
+        code: INVALID_USER_ID,
+        message: 'Invalid user id'
+      }));
+    }
+
+    return User.find({"email": email}, function (err, users) {
+      if (err) {
+        return res.end(JSON.stringify({
+          code: ERROR_WHEN_FIND,
+          message: err.message
+        }));
+      }
+
+      if (users == null || users.length == 0){
+        return res.end(JSON.stringify({
+          code: ERROR_WHEN_FIND,
+          message: 'No such user!'
+        }));
+      }
+
+      var ret = {
+        code: 200,
+        message: {}
+      };
+
+      ret.message = prepareUserInfo(app, users[0], function(userinfo){
+        return res.end(JSON.stringify(userinfo));
+      });
+    });
+  }
+
+  User.findById(id, function (err, user) {
+    if (err) {
+      return res.end(JSON.stringify({
+        code: ERROR_WHEN_FIND,
+        message: err.message
+      }));
+    }
+
+    var ret = {
+      code: 200,
+      message: {}
+    };
+    ret.message = prepareUserInfo(app, user, function(userinfo){
+      return res.end(JSON.stringify(userinfo));
+    });
+  });
+}
+
+/**
+ * update user attribute
+ * @param req {object} http request
+ * @param res {object} http response
+ * @param id  {string} user id
+ * @param name  {string} attribute name
+ * @param value {string} attribute value
+ * @return {UserInfo}
+ */
+function doUpdateUserAttr(req, res, id, name, value) {
+  var app = req.header('app');
+  db.updateUserAttr(id, name, value, function (err, user, attr) {
+    if (err) {
+      return res.end(JSON.stringify({
+        code: ERROR_WHEN_UPDATE,
+        message: err
+      }));
+    }
+
+    var ret = {
+      code: 200,
+      message: {}
+    };
+    ret.message = prepareUserInfo(app, user, function(userinfo) {
+      return res.end(JSON.stringify(userinfo));
+    });
+
+  });
+}
+
+/**
+ * set user attribute, MUST have one of the id or email parameter
+ * @param req {object} http request
+ * @param req.body.name {string} attribute name
+ * @param req.body.value {string} attribute value
+ * @param req.params.id {string=} user id
+ * @param req.body.email {string=} user email
+ * @param res {object} http response
+ * @returns {UserInfo}
+ */
+function setUserAttr(req, res) {
+  var app = req.header('app');
+
+  var name = req.body.name;
+  if (name == null) {
+    return res.end(JSON.stringify({
+      code: INVALID_ATTR_NAME,
+      message: 'Invalid attribute name'
+    }));
+  }
+
+  var value = req.body.value;
+
+  var id = req.params.id;
+  if (id == null) {
+    var email = req.body.email;
+    if (email == null) {
+      return res.end(JSON.stringify({
+        code: INVALID_USER_ID,
+        message: 'Invalid user id'
+      }));
+    }
+
+    User.find({"email": email}, function(err, users){
+      if (err) {
+        return res.end(JSON.stringify({
+          code: INVALID_USER_ID,
+          message: 'Invalid user id'
+        }));
+      }
+
+      if (users == null || users.length == 0){
+        return res.end(JSON.stringify({
+          code: INVALID_USER_ID,
+          message: 'Invalid user id'
+        }));
+      }
+
+      id = users[0].id;
+      return doUpdateUserAttr(req, res, id, name, value);
+    });
+  } else {
+    return doUpdateUserAttr(req, res, id, name, value);
+  }
+}
+
+/**
+ @typedef AppUserAttribute
+ @type {Object}
+ @property {string} name - attribute name
+ @property {string} value - attribute value
+ */
+/**
+ * set application user attribute
+ * @param req {object} http request
+ * @param req.body.email {string} user email
+ * @param req.body.name {string} attribute name
+ * @param req.body.value {string} attribute value
+ * @param res {object} http response
+ * @param return {AppUserAttribute}
+ */
+function setAppUserAttr(req, res) {
+  var app = req.header('app');
+
+  var email = req.body.email;
+  var name = req.body.name;
+  var value = req.body.value;
+
+  db.setAppUserAttrByEmail(app, email, name, value, function(err, attr){
+    if (err) {
+      logger.error(err.message);
+      return res.status(404).end('Not found');
+    }
+
+    var attribute = {
+      name: attr.name,
+      value: attr.value
+    };
+
+    res.status(200).end(JSON.stringify(attribute));
+  });
+}
+
+/**
+ * create a user
+ * @param req {object} http request
+ * @param req.body.email {string} user email
+ * @param req.body.name {string} user name
+ * @param req.body.password {string} user password
+ * @param res {object} http response
+ * @returns {UserInfo}
+ */
+function createUser(req, res) {
+  var app = req.header('app');
+  var email = req.body.email;
+  if (email == null) {
+    return res.end(JSON.stringify({
+      code: INVALID_EMAIL_FORMAT,
+      message: 'Invalid email format'
+    }));
+  }
+
+  var password = req.body.password;
+  var name = req.body.name;
+  if (name == null) {
+    name = 'anonymous';
+  }
+
+  db.saveUser({
+    name: name,
+    email: email,
+    password: password
+  }, function (err, docs) {
+    ret = {
+      code: 200,
+      message: docs
+    }
+    if (err) {
+      if (err.message.substring(0, 6) == 'E11000') {
+        ret.code = EMAIL_EXISTED;
+        ret.message = 'email already exists';
+      }
+
+      ret.code = CREATION_ERROR;
+      ret.message = err.message;
+      return res.end(JSON.stringify(ret));
+    }
+
+//      sendWelcomeMail(req.param('email'), function(error, response){
+//        if(error){
+//          console.log(error);
+//        }else{
+//          console.log("Message sent: " + response.message);
+//        }
+//      });
+    ret.message = prepareUserInfo(app, docs, function(userinfo){
+      return res.end(JSON.stringify(userinfo));
+    });
+  });
+}
+
+
+/**
+ @typedef Application
+ @type {Object}
+ @property {string} samlId - application saml id
+ @property {string} postUrl - saml consumer url
+ @property {string} token - application token
+ */
+
+/**
+ * create a new application
+ * @param req {object} http request
+ * @param req.body.samlId {string} application saml id
+ * @param req.body.postUrl {string} saml consumer url
+ * @param res {object} http response
+ * @return {Application}
+ */
+function newApplication(req, res) {
+  var app = new Application();
+  app.token = mongoose.Types.ObjectId();
+
+  var samlId = req.body.samlId;
+  var postUrl = req.body.postUrl;
+
+  if (samlId == null) {
+    samlId = "";
+  }
+
+  if (postUrl == null) {
+    postUrl = "";
+  }
+
+  app.samlId = samlId;
+  app.postUrl = postUrl;
+
+  app.save(function (err, application) {
+    if (err) {
+      return res.end(JSON.stringify({
+        code: FAILED_TO_CREATE_APP,
+        message: 'Failed to create application:' + err.message
+      }));
+    }
+
+    return res.end(JSON.stringify({
+      code: 200,
+      message: application
+    }))
+  });
+}
+
+/**
+ * list all the applications
+ * @param req {object} http request
+ * @param res {object} http response
+ * @return {Application} list of application
+ */
+function listApps(req, res) {
+  Application.find({}, function(err, apps){
+    if (err || apps == null || apps.length == 0) {
+      return res.end("No application");
+    }
+
+    return res.render("apps", {apps:apps});
+  });
+}
+
+
+/**
+ @typedef UserToken
+ @type {Object}
+ @property {string} email - user email
+ @property {string} token - token
+ */
+/**
+ * login
+ * @param req {object} http request
+ * @param req.body.email {string} user email
+ * @param req.body.password {string} user password
+ * @param res {object} http request
+ * @return {UserToken}
+ */
+function login(req, res) {
+  var email = req.body.email;
+  var password = req.body.password;
+
+  res.setHeader("Content-Type", "application/json");
+
+  User.find({email: email}, function (err, user) {
+    if (err || user == null || user.length == 0) {
+      return res.end(JSON.stringify({
+        code: UNAUTHORIZED_USER,
+        message: 'unauthorized user: ' + email
+      }));
+    }
+
+    user[0].verifyPassword(password, function(err, passwordCorrect) {
+      if (err) {
+        return res.end(JSON.stringify({
+          code: USER_PASSWORD_INCORRECT,
+          message: err.message
+        }));
+      }
+      if (!passwordCorrect) {
+        return res.end(JSON.stringify({
+          code: USER_PASSWORD_INCORRECT,
+          message: 'user/password incorrect'
+        }));
+      }
+
+      db.getUserAttr(user[0]._id, 'token', function(err, user, attr){
+        if (err) {
+          return res.end(JSON.stringify({
+            code: UNAUTHORIZED_USER,
+            message: 'unauthorized user: ' + email
+          }));
+        }
+
+        var attribute = attr;
+        if (attr == null) {
+          attribute = new Attribute({name:'token', value:mongoose.Types.ObjectId()});
+          user.attributes.push(attribute);
+        } else {
+          if (attribute.value == null) {
+            attribute.value = mongoose.Types.ObjectId();
+          }
+        }
+        user.save();
+
+        return res.end(JSON.stringify({
+          code: 200,
+          message: {
+            email: email,
+            token: attribute.value}
+        }));
+      });
+    });
+  })
+}
+
+/**
+ * verify user token
+ * @param req {object} http request
+ * @param req.body.email {string} user email
+ * @param req.body.token {string} user token
+ * @param res {object} http response
+ * @return {UserToken}
+ */
+function verifyToken(req, res) {
+  var email = req.body.email;
+  var token = req.body.token;
+
+  if(email == null || token == null) {
+    res.status(400).send('Bad Request');
+  }
+
+  User.find({email: email}, function (err, user) {
+    if (err || user == null || user.length == 0) {
+      return res.status(404).end(JSON.stringify({
+        code: UNAUTHORIZED_USER,
+        message: 'could not find user: ' + email
+      }));
+    }
+
+    db.getUserAttr(user[0]._id, 'token', function(err, user, attr){
+      if (err) {
+        return res.status(500).end(JSON.stringify({
+          code: UNAUTHORIZED_USER,
+          message: 'Error when finding token of the user: ' + email
+        }));
+      }
+
+      var attribute = attr;
+      if (attr == null) {
+        attribute = new Attribute({name:'token', value:mongoose.Types.ObjectId()});
+        user.attributes.push(attribute);
+      } else {
+        if (attribute.value == null) {
+          attribute.value = mongoose.Types.ObjectId();
+        }
+      }
+      user.save();
+
+      if (attribute.value != token) {
+        return res.status(409).end(JSON.stringify({
+          code: 200,
+          message: {
+            email: email,
+            token: attribute.value}
+        }));
+      }
+
+      return res.end(JSON.stringify({
+        code: 200,
+        message: {
+          email: email,
+          token: attribute.value}
+      }));
+    });
+  })
+}
+
+/**
+ * prepare user information
+ * @param appId {string} application information
+ * @param user  {object} user object
+ * @param done {function} callback function(userinfo)
+ */
+function prepareUserInfo(appId, user, done) {
+  var ret = {}
+  ret.id = user._id;
+  ret.email = user.email;
+  ret.name = user.name;
+  ret.attributes = user.attributes;
+
+  // get app specific attr
+  db.findAllAppUserAttrByEmail(app, user.email, function(err, attrs){
+    if (err) {
+      done(ret);
+    }
+
+    var i = 0;
+    var attr = null;
+    for (i = 0; i &lt; attrs.length; i++) {
+      attr = new Attribute({
+        name: attrs[i].name,
+        value: attrs[i].value
+      });
+
+      ret.attributes.push(attr);
+    }
+
+    done(ret);
+  });
+}
+
+module.exports = {
+  ensureAppAuthenticated: ensureAppAuthenticated,
+  getUserInfo: getUserInfo,
+  setUserAttr: setUserAttr,
+  createUser: createUser,
+  newApplication: newApplication,
+  listApps: listApps,
+  login: login,
+  verifyToken: verifyToken
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="db.html">lib/data/db</a></li><li><a href="models.html">lib/data/models</a></li><li><a href="schemas.html">lib/data/schemas</a></li><li><a href="api.html">routes/api</a></li></ul><h3>Classes</h3><ul><li><a href="global.html#Logger">Logger</a></li><li><a href="ModelManager.html">ModelManager</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Aug 10 2014 16:08:10 GMT+0200 (Romance Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

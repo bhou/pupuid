@@ -5,13 +5,14 @@ var samlp = require('../lib/samlp');
 var xtend = require('xtend');
 var fs = require('fs');
 var passport = require('passport');
-var db = require('../lib/db');
+var db = require('../lib/data/db');
 var querystring = require('querystring');
 
 var mongoose = require('mongoose');
-var dao = require('../lib/dao');
-var User = dao.User;
-var Attribute = dao.Attribute;
+//var dao = require('../lib/data/dao');
+var models = require('../lib/data/models');
+var User = models.User;
+var Attribute = models.Attribute;
 
 // credential used for saml provider
 var credential = {
