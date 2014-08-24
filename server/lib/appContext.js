@@ -6,6 +6,7 @@ var Logger = require('./utils/Logger');
 var logger = new Logger('appContext');
 
 var express = require('express');
+var i18n = require("i18n");
 var MongoStore = require('connect-mongo')(express);
 var passport = require('passport');
 var path = require('path');
@@ -24,9 +25,21 @@ function init(app, port) {
   }
   db.startup(conn);
 
+  // configure lib i18n
+  i18n.configure({
+    locales:['en', 'zh'],
+    defaultLocale: 'zh',
+    directory: __dirname + '/../locales'
+  });
+
   app.set('port', process.env.PORT || port);
   app.set('views', path.join(__dirname, '../views'));
   app.set('view engine', 'ejs');
+  app.locals({
+    'l':  i18n.__,
+    'ln': i18n.__n
+  });
+  app.use(i18n.init);
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.json());

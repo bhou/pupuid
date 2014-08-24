@@ -26,6 +26,7 @@
     "mocha": "*",
     "jsdoc": "*",
     "supertest": "*",
-    "password-generator": "*"
+    "password-generator": "*",
+    "i18n-node": "*"
   }
 }
