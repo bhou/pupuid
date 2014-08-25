@@ -1,8 +1,9 @@
-
 /*
  * GET home page.
  */
 
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+var config = require('../config');
+
+exports.index = function (req, res) {
+  res.render('index', { active: 'home', title: 'Express' });
 };

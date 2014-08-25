@@ -27,6 +27,7 @@
     "jsdoc": "*",
     "supertest": "*",
     "password-generator": "*",
-    "i18n-node": "*"
+    "i18n": "*",
+    "node-uuid": "*"
   }
 }

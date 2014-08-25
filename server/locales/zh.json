@@ -1,5 +1,16 @@
 {
   "home.title": "噗噗ID",
-  "logo.name": "噗噗ID"
+  "logo.name": "噗噗ID",
 
+  "header.home": "首页",
+  "header.applications": "应用列表",
+  "header.docs": "文档",
+  "header.login": "登录",
+
+  "application.id": "应用标识",
+  "application.samlId": "应用SAML标识",
+  "application.acs": "SAML回调地址",
+  "application.token": "应用令牌",
+
+  "end": "end"
 }

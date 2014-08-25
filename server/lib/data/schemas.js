@@ -10,13 +10,14 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var passport = require('passport');
 var bcrypt = require('bcrypt');
+var uuid = require('node-uuid');
 
 /**
  * application schema
  * @type {Schema}
  */
 var ApplicationSchema = new Schema({
-  token: {type: ObjectId, required: true},
+  token: {type: String, required: true, default: function() {return uuid.v1();}},
   samlId: {type: String, index: true, required: true, unique: true},
   postUrl: {type: String, required: false}
 });

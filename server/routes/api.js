@@ -5,6 +5,7 @@
 var Logger = require('../lib/utils/Logger');
 var logger = new Logger('api');
 
+var config = require('../config');
 var generatePwd = require('password-generator');
 var mongoose = require('mongoose');
 var db = require('../lib/data/db');
@@ -473,7 +474,7 @@ function resetPassword(req, res) {
  */
 function newApplication(req, res) {
   var app = new Application();
-  app.token = mongoose.Types.ObjectId();
+  //app.token = new mongoose.Types.ObjectId();
 
   var samlId = getArg(req, 'samlId');
   var postUrl = getArg(req, 'postUrl');
@@ -550,7 +551,7 @@ function listApps(req, res) {
       return res.end("No application");
     }
 
-    return res.render("apps", {apps: apps});
+    return res.render("apps", {active: 'applications', apps: apps});
   });
 }
 
@@ -603,7 +604,7 @@ function login(req, res) {
           }
         }
 
-        user.save(function(err, newUser) {
+        user.save(function (err, newUser) {
           return sendResponse(res, 200, {
             email: email,
             token: attribute.value});
